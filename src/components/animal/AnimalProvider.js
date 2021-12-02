@@ -10,11 +10,13 @@ export const AnimalProvider = (props) => {
     const [animals, setAnimals] = useState([])
 
     //?_expand=location adds location so we can pull location for the call
+    //?_expand=location&_expand=customer
     const getAnimals = () => {
-        return fetch("http://localhost:8088/animals?_expand=location")
+        return fetch("http://localhost:8088/animals?_expand=location&_expand=customer")
         .then(res => res.json())
         .then(setAnimals)
     }
+    //setAnimals puts the data from the api into the array of animals
 
     const addAnimal = animalObj => {
         return fetch("http://localhost:8088/animals", {
@@ -41,3 +43,4 @@ export const AnimalProvider = (props) => {
         </AnimalContext.Provider>
     )
 }
+

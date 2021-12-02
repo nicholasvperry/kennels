@@ -2,6 +2,9 @@ import React from "react"
 import { Link } from "react-router-dom"
 import "./NavBar.css"
 
+
+//each link changes from web address to web address/location or address/animals
+//Navbar just changes the web address route
 export const NavBar = (props) => {
     return (
         <ul className="navbar">

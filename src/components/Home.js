@@ -1,5 +1,6 @@
 import React from "react";
 import { PropsAndState } from './PropsAndState'
+import "./Home.css"
 
 export const Home = () => (
     <>
