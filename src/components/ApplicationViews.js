@@ -35,7 +35,9 @@ export const ApplicationViews = () => {
 
             {/* Render the employee list when http://localhost:3000/employee */}
             <Route path="employees/*" element={<EmployeeList />} />
-            <Route path="animals/create/*" element={<EmployeeForm />} />
+
+            
+            <Route path="employees/create/*" element={<EmployeeForm />} />
 
             {/* Render the location list when http://localhost:3000/locations */}
             <Route path="locations/*" element={<LocationList />} />

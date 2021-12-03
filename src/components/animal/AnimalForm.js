@@ -6,9 +6,11 @@ import "./Animal.css"
 import { useNavigate } from 'react-router-dom';
 
 export const AnimalForm = () => {
-    const { addAnimal } = useContext(AnimalContext)
-    const { locations, getLocations } = useContext(LocationContext)
-    const { customers, getCustomers } = useContext(CustomerContext)
+  //Animal context gives us acces to our fetch calls
+  const { addAnimal } = useContext(AnimalContext)
+//Gives us access to our fetch calls and makes state for locations/customers
+  const { locations, getLocations } = useContext(LocationContext)
+  const { customers, getCustomers } = useContext(CustomerContext)
 
     /*
     With React, we do not target the DOM with `document.querySelector()`. Instead, our return (render) reacts to state or props.
@@ -40,7 +42,7 @@ export const AnimalForm = () => {
       always create a copy, make changes, and then set state.*/
       
       const newAnimal = { ...animal }
-      /* Animal is an object with properties.
+      /* Animal is the state - an object with properties.
       Set the property to the new value
       using object bracket notation. */
       newAnimal[event.target.id] = event.target.value
@@ -50,7 +52,9 @@ export const AnimalForm = () => {
 
     const handleClickSaveAnimal = (event) => {
       event.preventDefault() //Prevents the browser from submitting the form
-        //Pull foreign keys from form to save in json
+      
+      
+      //Pull foreign keys from form to save in json
       const locationId = parseInt(animal.locationId)
       const customerId = parseInt(animal.customerId)
       //needed to save values as integer
