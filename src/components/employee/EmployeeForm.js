@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { EmployeeContext } from "./EmployeeProvider";
 import { LocationContext } from "../location/LocationProvider";
+import Swal from 'sweetalert2';
 
 export const EmployeeForm = () => {
     const {addEmployee} = useContext(EmployeeContext)
@@ -13,7 +14,9 @@ export const EmployeeForm = () => {
     //useState sets initial values
     const [employee, setEmployee] = useState({    
         name: "",
-        locationId: 0
+        locationId: 0,
+        manager: false,
+        fullTime: false
       });
 
       const navigate = useNavigate()
@@ -47,15 +50,50 @@ export const EmployeeForm = () => {
         const locationId = parseInt(employee.locationId)
         employee.locationId = locationId
 
-        // if (employeeName === "") {
-        //   window.alert("Please add your name")
-        // } else {
-        //   //invoke addEmployee passing employee as an argument.
-        //   //once complete, change the url and display the employee list
+        //Boolean turns string into boolean
+        const fullTime = Boolean(employee.fullTime)
+        employee.fullTime = fullTime
+
+        const manager = Boolean(employee.manager)
+        employee.manager = manager
+
+        if (employee.name === "") {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please add employee name!',
+            position: `center`
+          })
+        } else if (employee.locationId === 0 ) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please add location!',
+            position: `center`
+          })
+        } else {
+        //invoke addEmployee passing employee as an argument.
+        //once complete, change the url and display the employee list
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          })         
+           
+          Toast.fire({
+            icon: 'success',
+            title: 'You have saved your new employee!'
+          })
           addEmployee(employee)
           .then(() => navigate("/employees"))
         // }
-      }
+      }}
 
     return (
         <form className="employeeForm">
@@ -80,6 +118,21 @@ export const EmployeeForm = () => {
                   </select>
               </div>
           </fieldset>
+
+          <fieldset>
+              <div className="form-group">
+                  <label htmlFor="manager">Manager</label>
+                  <input type="checkbox" id="manager" onChange={handleControlledInputChange} required  className="form-control" placeholder="Manager" value={employee.manager}/>
+              </div>
+            </fieldset> 
+
+          <fieldset>
+              <div className="form-group">
+                  <label htmlFor="manager">Full Time</label>
+                  <input type="checkbox" id="fullTime" onChange={handleControlledInputChange} required  className="form-control" placeholder="Full Time" value={employee.fullTime}/>
+              </div>
+            </fieldset> 
+          
 
           <button className="btn btn-primary"
             onClick={handleClickSaveEmployee}>

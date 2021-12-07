@@ -4,6 +4,7 @@ import { AnimalContext } from "../animal/AnimalProvider"
 import { CustomerContext } from "../customer/CustomerProvider"
 import "./Animal.css"
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export const AnimalForm = () => {
   //Animal context gives us acces to our fetch calls
@@ -106,7 +107,7 @@ export const AnimalForm = () => {
                       <option value="0">Select a customer</option>
                       {customers.map(c => (
                           <option key={c.id} value={c.id}>
-                              {c.name}
+                              {c.firstName} {c.lastName}
                           </option>
                       ))}
                   </select>
