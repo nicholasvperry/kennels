@@ -5,7 +5,7 @@ import "./Employee.css"
 import { useNavigate } from "react-router";
 
 
-export const EmployeeList = ({hostory}) => {
+export const EmployeeList = ({history}) => {
   
   const { getEmployees, employees} = useContext(EmployeeContext)
 

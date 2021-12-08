@@ -1,54 +1,53 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { EmployeeContext } from "./EmployeeProvider";
-import { LocationContext } from "../location/LocationProvider";
-import Swal from 'sweetalert2';
+import React, { useContext, useEffect, useState } from "react"
+import { LocationContext } from "../location/LocationProvider"
+import { EmployeeContext } from "./EmployeeProvider"
+import "./Employee.css"
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const EmployeeForm = () => {
-    const {addEmployee} = useContext(EmployeeContext)
-    //pull getLocations fetch call and store state in "location"
-    const { locations, getLocations} = useContext(LocationContext)
+    const { addEmployee, getEmployeeById, updateEmployee } = useContext(EmployeeContext)
+    const { locations, getLocations } = useContext(LocationContext)
+    
 
-    //employee is the state
-    //setEmployee is how we change the value of the object
-    //useState sets initial values
-    const [employee, setEmployee] = useState({    
+    //for edit, hold on to state of employee in this view
+    const [employee, setEmployee] = useState({
         name: "",
-        locationId: 0,
+        rate: "",              
         manager: false,
-        fullTime: false
-      });
+        fullTime: false,
+        locationId: 0
+    })
+    //wait for data before button is active
+    const [isLoading, setIsLoading] = useState(true);
 
-      const navigate = useNavigate()
+    const {employeeId} = useParams();
+	  const navigate = useNavigate();
 
-    useEffect(() => {
-        getLocations()
-    }, [])
-
+    //when field changes, update state. This causes a re-render and updates the view.
+    //Controlled component
     const handleControlledInputChange = (event) => {
-        /* When changing a state object or array,
-        always create a copy, make changes, and then set state.*/
-        
-        //...employee makes copy of current state
-        const newEmployee = { ...employee }
-        /* Employee is an object with properties.
-        Set the property to the new value
-        using object bracket notation. */
-
-        //Change copy. ID tells which property to change
-        newEmployee[event.target.id] = event.target.value
-        
-        // update copy (change state)
-        setEmployee(newEmployee)
-
+      //When changing a state object or array,
+      //always create a copy make changes, and then set state.
+      const newEmployee = { ...employee }
+      //employee is an object with properties.
+      //set the property to the new value
+      newEmployee[event.target.name] = event.target.value
+      //update state
+      setEmployee(newEmployee)
     }
 
-    const handleClickSaveEmployee = (event) => {
-        event.preventDefault() //Prevents the browser from submitting the form
-        
-        //Pull foreign keys from form to save in json
-        const locationId = parseInt(employee.locationId)
-        employee.locationId = locationId
+    const handleControlledInputChangeBool = (event) => {
+    //When changing a state object or array,
+      //always create a copy make changes, and then set state.
+      const newEmployee = { ...employee }
+      //employee is an object with properties.
+      //set the property to the new value
+      newEmployee[event.target.name] = event.target.checked
+      //update state
+      setEmployee(newEmployee)
+    }
+
+    const handleSaveEmployee = () => {
 
         //Boolean turns string into boolean
         const fullTime = Boolean(employee.fullTime)
@@ -57,87 +56,119 @@ export const EmployeeForm = () => {
         const manager = Boolean(employee.manager)
         employee.manager = manager
 
-        if (employee.name === "") {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please add employee name!',
-            position: `center`
+
+      if (parseInt(employee.locationId) === 0) {
+          window.alert("Please select a location")
+      } else {
+        //disable the button - no extra clicks
+        setIsLoading(true);
+        if (employeeId){
+          //PUT - update
+          updateEmployee({
+              id: employee.id,
+              name: employee.name,
+              rate: employee.rate,              
+              manager: employee.manager,
+              fullTime: employee.fullTime,
+              locationId: parseInt(employee.locationId)
+              
           })
-        } else if (employee.locationId === 0 ) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please add location!',
-            position: `center`
+          .then(() => navigate(`/employees/detail/${employee.id}`))
+        }else {
+          //POST - add
+          addEmployee({
+              name: employee.name,
+              rate: employee.rate,              
+              manager: employee.manager,
+              fullTime: employee.fullTime,
+              locationId: parseInt(employee.locationId)
+              
+          })
+          .then(() => navigate("/employees"))
+        }
+      }
+    }
+
+    // Get locations. If employeeId is in the URL, getemployeeById
+    useEffect(() => {
+      getLocations().then(() => {
+        if (employeeId){
+          getEmployeeById(employeeId)
+          .then(employee => {
+              setEmployee(employee)
+              setIsLoading(false)
           })
         } else {
-        //invoke addEmployee passing employee as an argument.
-        //once complete, change the url and display the employee list
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'center',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          })         
-           
-          Toast.fire({
-            icon: 'success',
-            title: 'You have saved your new employee!'
-          })
-          addEmployee(employee)
-          .then(() => navigate("/employees"))
-        // }
-      }}
+          setIsLoading(false)
+        }
+      })
+    }, [])
+
+    //since state controlls this component, we no longer need
+    //useRef(null) or ref
 
     return (
-        <form className="employeeForm">
-            <h2 className="employeeFormTitle">New Employee</h2>
-          <fieldset>
-              <div className="form-group">
-                  <label htmlFor="name">Employee name:</label>
-                  <input type="text" id="name" onChange={handleControlledInputChange} required autoFocus className="form-control" placeholder="Employee name" value={employee.name}/>
-              </div>
-            </fieldset> 
+      <form className="employeeForm">
+        <h2 className="employeeFormTitle">New employee</h2>
+        <fieldset>
+          <div className="form-group">
+            <label htmlFor="employeeName">Employee name: </label>
+            <input type="text" id="employeeName" name="name" required autoFocus className="form-control"
+            placeholder="employee name"
+            onChange={handleControlledInputChange}
+            defaultValue={employee.name}/>
+          </div>
+        </fieldset>
 
-            <fieldset>
-              <div className="form-group">
-                  <label htmlFor="location">Assign to location: </label>
-                  <select onChange={handleControlledInputChange} defaultValue={employee.locationId} name="locationId" id="locationId" className="form-control" >
-                      <option type="number" value="0">Select a location</option>
-                      {locations.map(l => (
-                          <option key={l.id} value={l.id}>
-                              {l.name}
-                          </option>
-                      ))}
-                  </select>
-              </div>
-          </fieldset>
+        <fieldset>
+          <div className="form-group">
+            <label htmlFor="location">Assign to location: </label>
+            <select value={employee.locationId} name="locationId" id="employeeLocation" className="form-control" onChange={handleControlledInputChange}>
+              <option value="0">Select a location</option>
+              {locations.map(l => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </fieldset>
 
-          <fieldset>
-              <div className="form-group">
-                  <label htmlFor="manager">Manager</label>
-                  <input type="checkbox" id="manager" onChange={handleControlledInputChange} required  className="form-control" placeholder="Manager" value={employee.manager}/>
-              </div>
-            </fieldset> 
+        <fieldset>
+          <div className="form-group">
+            <label htmlFor="employeeRate">Employee rate: $</label>
+            <input type="text" id="employeeRate" name="rate" required className="form-control"
+            placeholder="Employee rate"
+            onChange={handleControlledInputChange}
+            defaultValue={employee.rate}/>
+          </div>
+        </fieldset>
 
-          <fieldset>
-              <div className="form-group">
-                  <label htmlFor="manager">Full Time</label>
-                  <input type="checkbox" id="fullTime" onChange={handleControlledInputChange} required  className="form-control" placeholder="Full Time" value={employee.fullTime}/>
-              </div>
-            </fieldset> 
-          
+        <fieldset>
+          <div className="form-group">
+            <label htmlFor="employeeManager">Manager</label>
+            <input type="checkbox" checked={employee.manager} id="employeeManager" name="manager" required className="form-control"
+            placeholder="employee manager"
+            onChange={handleControlledInputChangeBool} value={employee.manager}
+            />
+          </div>
+        </fieldset>
 
-          <button className="btn btn-primary"
-            onClick={handleClickSaveEmployee}>
-            Save Employee
-          </button>
-        </form>
+        <fieldset>
+            <div className="form-group">
+            <label htmlFor="fullTime">Full Time</label>
+            <input type="checkbox" checked={employee.fullTime} id="employeeFullTime" name="fullTime" onChange={handleControlledInputChangeBool} required  className="form-control" placeholder="Full Time" value={employee.fullTime}/>
+            </div>
+        </fieldset> 
+        
+       
+        <button className="btn btn-primary"
+          disabled={isLoading}
+          onClick={event => {
+            event.preventDefault() // Prevent browser from submitting the form and refreshing the page
+            handleSaveEmployee()
+          }}>
+        {employeeId ? <>Save Employee</> : <>Add Employee</>}</button>
+      </form>
     )
 }

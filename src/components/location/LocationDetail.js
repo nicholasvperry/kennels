@@ -23,16 +23,19 @@ export const LocationDetail = () => {
 
   return (
     <section className="location">
-      <h3 className="locationName">{location.name}</h3>
+      <h2 className="locationName">{location.name}</h2>
       <div className="locationAddress">Address: { location.address }</div>
-    <div className="locationEmployees">Employees: </div>
+    <h3 className="locationEmployees">Employees: </h3>
     <div className="locationEmployeeNames">
     {location.employees?.map(employeeObj => <p key={employeeObj.id}>{employeeObj.name}</p>)}
     </div>
-    <div className="numberEmployees">Current Residents</div>
+    <h3 className="numberEmployees">Current Residents:</h3>
     <div className="locationEmployeeNames">
     {location.animals?.map(animalObj => <p key={animalObj.id}>{animalObj.name}</p>)}
     </div>
+    <button onClick={() => {
+    navigate(`/locations/edit/${location.id}`)
+}}>Edit</button>
     </section>
     
   )

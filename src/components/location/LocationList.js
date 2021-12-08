@@ -30,6 +30,10 @@ export const LocationList = () => {
       <>
          <h1>Locations</h1>
 
+         <button onClick={() => navigate("/locations/create")}>
+                New Location
+            </button>
+
 
           <div className="locations">
             {locations.map(location => {

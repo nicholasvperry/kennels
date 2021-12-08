@@ -4,7 +4,7 @@ import "./Employee.css"
 import { useParams, useNavigate } from "react-router-dom"
 
 export const EmployeeDetail = () => {
-  const { getEmployeeById } = useContext(EmployeeContext)
+  const { getEmployeeById, fireEmployee } = useContext(EmployeeContext)
 
 	const [employee, setEmployee] = useState({})
 
@@ -19,6 +19,13 @@ export const EmployeeDetail = () => {
     })
     }, [])
 
+    const handleFire = () => {
+      fireEmployee(employee.id)
+      .then(() => {
+        navigate("/employees")
+      })
+    }
+
   return (
     <section className="employee">
       <h3 className="employeeName">{employee.name}</h3>
@@ -26,6 +33,11 @@ export const EmployeeDetail = () => {
       <div className="employeeLocation">Location: {employee.location?.name}</div>
       <div className="manager">{employee.manager ? `Manager` : "Professional"}</div>
       <div className="position">{employee.fullTime ? `Full Time` : "Part Time"}</div>
+      <div className="rate">Rate: ${employee.rate}</div>
+      <button onClick={() => {
+    navigate(`/employees/edit/${employee.id}`)}}
+    >Edit</button>
+    <button onClick={handleFire}>Fire Employee</button>
     </section>
   )
 }
