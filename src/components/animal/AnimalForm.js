@@ -12,9 +12,12 @@ export const AnimalForm = () => {
 
     //for edit, hold on to state of animal in this view
     const [animal, setAnimal] = useState({})
+
     //wait for data before button is active
+    //Button greys out until state is changed.
     const [isLoading, setIsLoading] = useState(true);
 
+    //Helps navigate after animal edit
     const {animalId} = useParams();
 	  const navigate = useNavigate();
 
@@ -26,19 +29,21 @@ export const AnimalForm = () => {
       const newAnimal = { ...animal }
       //animal is an object with properties.
       //set the property to the new value
+      //if we want to target id [event.target.id]
       newAnimal[event.target.name] = event.target.value
       //update state
       setAnimal(newAnimal)
     }
 
     const handleSaveAnimal = () => {
-      if (parseInt(animal.locationId) === 0) {
-          window.alert("Please select a location")
+      if (parseInt(animal.locationId) === 0 || parseInt(animal.customerId) === 0) {
+          window.alert("Please select a location and customer")
       } else {
-        //disable the button - no extra clicks
+        //setIsLoading disables the button - no extra clicks
         setIsLoading(true);
+        //If there is an id in address bar run updateAnimal(). If not run addAnimal()
         if (animalId){
-          //PUT - update
+          //PUT - update. Gets animal id from address
           updateAnimal({
               id: animal.id,
               name: animal.name,
@@ -60,7 +65,8 @@ export const AnimalForm = () => {
       }
     }
 
-    // Get customers and locations. If animalId is in the URL, getAnimalById
+    // Get customers and locations. If animalId is in the URL, getAnimalById and set state. Gives inputs information.
+    //If fills information for edit form. Else populates new form.
     useEffect(() => {
       getCustomers().then(getLocations).then(() => {
         if (animalId){
@@ -114,6 +120,7 @@ export const AnimalForm = () => {
             </select>
           </div>
         </fieldset>
+
         <fieldset>
           <div className="form-group">
             <label htmlFor="customer">Customer: </label>
@@ -127,6 +134,7 @@ export const AnimalForm = () => {
             </select>
           </div>
         </fieldset>
+        
         <button className="btn btn-primary"
           disabled={isLoading}
           onClick={event => {

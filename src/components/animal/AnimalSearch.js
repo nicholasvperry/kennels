@@ -3,7 +3,7 @@ import { AnimalContext } from "./AnimalProvider"
 import "./Animal.css"
 
 export const AnimalSearch = () => {
-  const { setSearchTerms } = useContext(AnimalContext)
+    const { setSearchTerms } = useContext(AnimalContext)
 
   return (
     <>

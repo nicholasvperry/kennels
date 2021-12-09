@@ -27,8 +27,9 @@ export const ApplicationViews = () => {
         <EmployeeProvider>
         <LocationProvider>
         <Routes>
-            {/* Render the location list when http://localhost:3000/ */}
+            {/* Home render when http://localhost:3000/ */}
             <Route exact path="/" element={<Home />} />
+            
 
             {/* Animal list and animal search */}
             <Route exact path="animals/*" element={<><AnimalSearch /><AnimalList /></>} />
@@ -39,22 +40,31 @@ export const ApplicationViews = () => {
             {/* editAnimal form */}
             <Route path="animals/edit/:animalId/*" element={<AnimalForm />} />
 
-           
+           {/* animal details card */}
+            <Route path="animals/detail/:animalId/*" element={<AnimalDetail />} />
+
 
                 
-            {/* Render the customer list when http://localhost:3000/customers */}
-            <Route path="customers/*" element={<CustomerList />} />  
+            {/* Customerlist when http://localhost:3000/customers */}
+            <Route path="customers/*" element={<CustomerList />} />
 
-            {/* Render the employee list when http://localhost:3000/employee */}
+
+
+            {/* Employee list render when http://localhost:3000/employee */}
             <Route path="employees/*" element={<EmployeeList />} />
 
-            {/* Render the employee form when http://localhost:3000/employee/create */}
+            {/* Employee form render when http://localhost:3000/employee/create */}
             <Route path="employees/create/*" element={<EmployeeForm />} />
 
-             {/* editEmplyee form */}
-             <Route path="employees/edit/:employeeId/*" element={<EmployeeForm />} />
+            {/* editEmplyee form */}
+            <Route path="employees/edit/:employeeId/*" element={<EmployeeForm />} />
 
-            {/* Render the location list when http://localhost:3000/locations */}
+            {/* employee details card */}
+            <Route path="employees/detail/:employeeId/*" element={<EmployeeDetail />} />
+
+
+
+            {/* Location list render when http://localhost:3000/locations */}
             <Route path="locations/*" element={<LocationList />} />
 
             {/* new location form */}
@@ -63,13 +73,7 @@ export const ApplicationViews = () => {
             {/* editLocation form */}
             <Route path="locations/edit/:locationId/*" element={<LocationForm />} />
 
-            {/* animal details card */}
-            <Route path="animals/detail/:animalId/*" element={<AnimalDetail />} />
-
-             {/* employee details card */}
-            <Route path="employees/detail/:employeeId/*" element={<EmployeeDetail />} />
-
-             {/* location details card */}
+            {/* location details card */}
             <Route path="locations/detail/:locationId/*" element={<LocationDetail />} />
 
 

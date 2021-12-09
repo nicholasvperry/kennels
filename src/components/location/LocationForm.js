@@ -12,6 +12,7 @@ export const LocationForm = () => {
 
     //for edit, hold on to state of location in this view
     const [location, setLocation] = useState({})
+    
     //wait for data before button is active
     const [isLoading, setIsLoading] = useState(true);
 
@@ -76,7 +77,7 @@ export const LocationForm = () => {
 
     return (
       <form className="locationForm">
-        <h2 className="locationFormTitle">New location</h2>
+        <h2 className="locationFormTitle">{locationId ? "Edit location" : "New Location"}</h2>
         <fieldset>
           <div className="form-group">
             <label htmlFor="locationName">Location name: </label>
